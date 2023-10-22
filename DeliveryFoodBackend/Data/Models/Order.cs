@@ -30,6 +30,6 @@ namespace DeliveryFoodBackend.Data.Models
         [ForeignKey("UserId")]
         public User User { get; set; }
 
-        public Basket Baskets { get; set; }
+        public List<Basket> Baskets { get; set; }
     }
 }

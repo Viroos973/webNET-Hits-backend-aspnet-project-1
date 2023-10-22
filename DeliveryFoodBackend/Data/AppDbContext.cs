@@ -16,9 +16,7 @@ namespace DeliveryFoodBackend.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Rating>()
-                .HasIndex(x => new { x.DishId, x.UserId })
-                .IsUnique();
+            modelBuilder.Entity<Rating>().HasKey(x => new { x.UserId, x.DishId });
 
             modelBuilder.Entity<Basket>(options =>
             {

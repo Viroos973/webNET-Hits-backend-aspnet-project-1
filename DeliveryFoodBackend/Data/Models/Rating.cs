@@ -5,9 +5,6 @@ namespace DeliveryFoodBackend.Data.Models
 {
     public class Rating
     {
-        [Key]
-        public Guid Id { get; set; }
-
         public Guid UserId { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; }
