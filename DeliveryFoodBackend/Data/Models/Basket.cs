@@ -12,6 +12,11 @@ namespace DeliveryFoodBackend.Data.Models
         public int Amount { get; set; }
 
         [Required]
+        public Guid DishId { get; set; }
+        [ForeignKey("DishId")]
+        public Dish Dish { get; set; }
+
+        [Required]
         public Guid UserId { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; }
@@ -19,7 +24,5 @@ namespace DeliveryFoodBackend.Data.Models
         public Guid? OrderId { get; set; }
         [ForeignKey("OrderId")]
         public Order Order { get; set;}
-
-        public List<Dish> Dishes { get; set; }
     }
 }

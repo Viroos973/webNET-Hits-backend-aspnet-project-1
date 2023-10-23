@@ -20,7 +20,7 @@ namespace DeliveryFoodBackend.Data
 
             modelBuilder.Entity<Basket>(options =>
             {
-                options.HasIndex(x => new { x.UserId, x.OrderId })
+                options.HasIndex(x => new { x.UserId, x.OrderId, x.DishId })
                 .IsUnique();
 
                 options.Property(x => x.OrderId)
