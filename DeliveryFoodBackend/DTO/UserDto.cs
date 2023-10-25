@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DeliveryFoodBackend.Data.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace DeliveryFoodBackend.DTO
 {
@@ -13,7 +14,7 @@ namespace DeliveryFoodBackend.DTO
         public DateTime? BirthDate { get; set; }
 
         [Required]
-        public string Gender { get; set; }
+        public Gender Gender { get; set; }
 
         public Guid? Address { get; set; }
 

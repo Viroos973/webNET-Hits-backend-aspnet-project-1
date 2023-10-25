@@ -11,7 +11,7 @@ namespace DeliveryFoodBackend.Data.Models
         [Required]
         public string FullName { get; set; }
 
-        public DataType? BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
 
         [Required]
         public string Genders { get; set; }
