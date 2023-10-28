@@ -18,7 +18,7 @@ namespace DeliveryFoodBackend.DTO
         [EmailAddress]
         public string Email { get; set; }
 
-        public string? AddressId { get; set; }
+        public Guid? AddressId { get; set; }
 
         public DateTime? BirthDate { get; set; }
 

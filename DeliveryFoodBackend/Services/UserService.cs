@@ -34,6 +34,13 @@ namespace DeliveryFoodBackend.Service
                 throw new BadHttpRequestException(message: $"Username {userRegisterModel.Email} is already taken.");
             }
 
+            var address = _context.AsHouses.Where(x => x.Objectguid == userRegisterModel.AddressId).FirstOrDefault();
+
+            if (address == null)
+            {
+                throw new BadHttpRequestException(message: $"Address not found.");
+            }
+
             var passwordHash = await PasswordHashing(userRegisterModel.Password);
 
             await _context.Users.AddAsync(new User
