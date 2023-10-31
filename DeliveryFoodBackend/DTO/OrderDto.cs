@@ -24,6 +24,6 @@ namespace DeliveryFoodBackend.DTO
 
         [Required]
         [MinLength(1)]
-        public string Address { get; set; }
+        public Guid Address { get; set; }
     }
 }

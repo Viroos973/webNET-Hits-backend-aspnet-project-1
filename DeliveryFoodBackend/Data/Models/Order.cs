@@ -22,7 +22,7 @@ namespace DeliveryFoodBackend.Data.Models
 
         [Required]
         [MinLength(1)]
-        public string Address { get; set; }
+        public Guid Address { get; set; }
 
         [Required]
         public Guid UserId { get; set; }

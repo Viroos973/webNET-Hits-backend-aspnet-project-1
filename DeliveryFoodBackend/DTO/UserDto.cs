@@ -14,7 +14,7 @@ namespace DeliveryFoodBackend.DTO
         public DateTime? BirthDate { get; set; }
 
         [Required]
-        public Gender Gender { get; set; }
+        public string Gender { get; set; }
 
         public Guid? Address { get; set; }
 
