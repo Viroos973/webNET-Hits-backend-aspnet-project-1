@@ -8,6 +8,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryFoodBackend.Service
 {
@@ -93,7 +94,7 @@ namespace DeliveryFoodBackend.Service
                 Audience = "DeliveryFoodFronted",
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim("id", userEntity.Id.ToString()),
+                    new Claim(ClaimTypes.Name, userEntity.Id.ToString()),
                     new Claim("name", userEntity.FullName),
                     new Claim("email", userEntity.EmailAddress.ToString())
                 })
@@ -103,6 +104,61 @@ namespace DeliveryFoodBackend.Service
             {
                 Token = tokenHandler.WriteToken(tokenHandler.CreateToken(TokenDescriptor))
             };
+        }
+
+        public async Task LogOut(string token)
+        {
+            string invalideToken = token;
+            DateTime expires = new JwtSecurityTokenHandler().ReadJwtToken(token).ValidTo;
+
+            await _context.Tokens.AddAsync(new Token
+            {
+                InvalideToken = invalideToken,
+                ExpiredDate = expires
+            });
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<UserDto> GetProfile(Guid id)
+        {
+            var user = await _context.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
+
+            return new UserDto
+            {
+                Id = id,
+                FullName = user.FullName,
+                BirthDate = user.BirthDate,
+                Gender = user.Genders,
+                Address = user.Address,
+                Email = user.EmailAddress,
+                PhoneNumber = user.Phone
+            };
+        }
+
+        public async Task EditProfile(UserEditModel editModel, Guid id)
+        {
+            if (editModel.BirthDate != null && editModel.BirthDate > DateTime.UtcNow)
+            {
+                throw new BadHttpRequestException(message: $"Birth date can't be later than today.");
+            }
+
+            var address = _context.AsHouses.Where(x => x.Objectguid == editModel.AddressId).FirstOrDefault();
+
+            if (address == null)
+            {
+                throw new BadHttpRequestException(message: $"Address not found.");
+            }
+
+            var user = await _context.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
+
+            user.FullName = editModel.FullName;
+            user.BirthDate = editModel.BirthDate;
+            user.Genders = editModel.Gender.ToString();
+            user.Address = editModel.AddressId;
+            user.Phone = editModel.PhoneNumber;
+
+            await _context.SaveChangesAsync();
         }
 
         private async Task<string> PasswordHashing(string password)

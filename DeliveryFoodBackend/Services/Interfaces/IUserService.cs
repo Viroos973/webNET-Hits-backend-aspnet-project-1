@@ -6,5 +6,8 @@ namespace DeliveryFoodBackend.Services.Interfaces
     {
         Task<TokenResponse> RegisterUser(UserRegisterModel userRegisterModel);
         Task<TokenResponse> Login(LoginCredentials credentials);
+        Task LogOut(string token);
+        Task<UserDto> GetProfile(Guid id);
+        Task EditProfile(UserEditModel editModel, Guid id);
     }
 }
