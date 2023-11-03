@@ -1,6 +1,8 @@
-﻿namespace DeliveryFoodBackend.Service
+﻿using DeliveryFoodBackend.Services.Interfaces;
+
+namespace DeliveryFoodBackend.Service
 {
-    public class DishService
+    public class DishService : IDishService
     {
     }
 }
