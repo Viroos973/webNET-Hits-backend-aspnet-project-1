@@ -1,6 +1,7 @@
 ﻿using DeliveryFoodBackend.Data.Models.Enums;
 using DeliveryFoodBackend.DTO;
 using DeliveryFoodBackend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeliveryFoodBackend.Controllers
@@ -10,10 +11,12 @@ namespace DeliveryFoodBackend.Controllers
     public class DishController : ControllerBase
     {
         public readonly IDishService _dishService;
+        public readonly ITokenService _tokenService;
 
-        public DishController(IDishService dishService)
+        public DishController(IDishService dishService, ITokenService tokenService)
         {
             _dishService = dishService;
+            _tokenService = tokenService;
         }
 
         [HttpGet]
@@ -50,6 +53,44 @@ namespace DeliveryFoodBackend.Controllers
             {
                 DishDto dishInfo = await _dishService.GetDishInfo(id);
                 return Ok(dishInfo);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new Response
+                {
+                    Status = "Error",
+                    Message = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new Response
+                {
+                    Status = "Error",
+                    Message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("{id}/rating/check")]
+        public async Task<IActionResult> CheckRatingUse(Guid id)
+        {
+            try
+            {
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Substring("Bearer ".Length);
+                await _tokenService.CheckToken(token);
+                bool checkRating = await _dishService.CheckRatingUse(id, Guid.Parse(User.Identity.Name));
+                return Ok(checkRating);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized(new Response
+                {
+                    Status = "Error",
+                    Message = "User is not authorized"
+                });
             }
             catch (KeyNotFoundException ex)
             {

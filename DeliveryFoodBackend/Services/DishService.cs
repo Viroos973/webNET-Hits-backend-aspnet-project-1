@@ -4,6 +4,7 @@ using DeliveryFoodBackend.DTO;
 using DeliveryFoodBackend.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http.HttpResults;
+using DeliveryFoodBackend.Data.Models;
 
 namespace DeliveryFoodBackend.Service
 {
@@ -78,6 +79,35 @@ namespace DeliveryFoodBackend.Service
                 Rating = dish.Rating,
                 Category = dish.Category
             };
+        }
+
+        public async Task<bool> CheckRatingUse(Guid dishId, Guid userId)
+        {
+            var dish = _context.Dishes.Where(x => x.Id == dishId).FirstOrDefault();
+
+            if (dish == null)
+            {
+                throw new KeyNotFoundException(message: $"Dish with id={dishId} not found");
+            }
+
+            var dishInBasket = _context.Baskets.Where(x => x.DishId == dishId && x.UserId == userId).ToList();
+
+            if (dishInBasket == null)
+            {
+                return false;
+            }
+
+            foreach (var basket in dishInBasket)
+            {
+                var basketInOrder = _context.Orders.Where(x => x.Id == basket.OrderId).FirstOrDefault();
+
+                if (basketInOrder != null && basketInOrder.Status == OrderStatus.Delivered.ToString())
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public async Task<List<DishDto>> GetDishes(DishCategory? category, bool vegetarian)
