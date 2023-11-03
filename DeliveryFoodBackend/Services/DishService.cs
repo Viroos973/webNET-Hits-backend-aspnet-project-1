@@ -3,6 +3,7 @@ using DeliveryFoodBackend.Data;
 using DeliveryFoodBackend.DTO;
 using DeliveryFoodBackend.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace DeliveryFoodBackend.Service
 {
@@ -54,6 +55,28 @@ namespace DeliveryFoodBackend.Service
             {
                 Dishes = listDishes,
                 Pagination = pagination
+            };
+        }
+
+        public async Task<DishDto> GetDishInfo(Guid id)
+        {
+            var dish = _context.Dishes.Where(x => x.Id == id).FirstOrDefault();
+
+            if (dish == null)
+            {
+                throw new KeyNotFoundException(message: $"Dish with id={id} not found");
+            }
+
+            return new DishDto
+            {
+                Id = id,
+                Name = dish.Name,
+                Description = dish.Description,
+                Price = dish.Price,
+                Image = dish.Image,
+                Vegetarian = dish.Vegetarian,
+                Rating = dish.Rating,
+                Category = dish.Category
             };
         }
 

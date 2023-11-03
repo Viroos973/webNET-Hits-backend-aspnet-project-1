@@ -41,5 +41,32 @@ namespace DeliveryFoodBackend.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetDishInfo(Guid id)
+        {
+            try
+            {
+                DishDto dishInfo = await _dishService.GetDishInfo(id);
+                return Ok(dishInfo);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new Response
+                {
+                    Status = "Error",
+                    Message = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new Response
+                {
+                    Status = "Error",
+                    Message = ex.Message
+                });
+            }
+        }
     }
 }
