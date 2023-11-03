@@ -41,5 +41,33 @@ namespace DeliveryFoodBackend.Service
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task DeleteDishBaskets(Guid dishId, Guid userId, bool increase)
+        {
+            var dish = _context.Dishes.Where(x => x.Id == dishId).FirstOrDefault();
+
+            if (dish == null)
+            {
+                throw new KeyNotFoundException(message: $"Dish with id={dishId} not found");
+            }
+
+            var dishInBasket = _context.Baskets.Where(x => x.DishId == dishId && x.UserId == userId).FirstOrDefault();
+
+            if (dishInBasket == null)
+            {
+                throw new KeyNotFoundException(message: "Dish not found in basket");
+            }
+
+            if (increase && dishInBasket.Amount > 1)
+            {
+                dishInBasket.Amount -= 1;
+            }
+            else
+            {
+                _context.Baskets.Remove(dishInBasket);
+            }
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

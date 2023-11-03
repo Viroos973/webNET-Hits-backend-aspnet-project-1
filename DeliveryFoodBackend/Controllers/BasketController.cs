@@ -55,5 +55,43 @@ namespace DeliveryFoodBackend.Controllers
                 });
             }
         }
+
+        [HttpDelete]
+        [Authorize]
+        [Route("dish/{dishId}")]
+        public async Task<IActionResult> DeleteDishBasket(Guid dishId, bool increase)
+        {
+            try
+            {
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Substring("Bearer ".Length);
+                await _tokenService.CheckToken(token);
+                await _basketSevise.DeleteDishBaskets(dishId, Guid.Parse(User.Identity.Name), increase);
+                return Ok();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized(new Response
+                {
+                    Status = "Error",
+                    Message = "User is not authorized"
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new Response
+                {
+                    Status = "Error",
+                    Message = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new Response
+                {
+                    Status = "Error",
+                    Message = ex.Message
+                });
+            }
+        }
     }
 }
