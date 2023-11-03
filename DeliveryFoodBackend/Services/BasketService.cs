@@ -1,6 +1,8 @@
 ﻿using DeliveryFoodBackend.Data;
 using DeliveryFoodBackend.Data.Models;
+using DeliveryFoodBackend.DTO;
 using DeliveryFoodBackend.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryFoodBackend.Service
 {
@@ -11,6 +13,19 @@ namespace DeliveryFoodBackend.Service
         public BasketService(AppDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<List<DishBasketDto>> GetDishBaskets(Guid userId)
+        {
+            return await _context.Baskets.Where(x => x.UserId == userId).Join(_context.Dishes, b => b.DishId, d => d.Id, (b, d) => new DishBasketDto
+            {
+                Id = b.Id,
+                Name = d.Name,
+                Price = d.Price,
+                TotalPrice = d.Price * b.Amount,
+                Amount = b.Amount,
+                Image = d.Image
+            }).ToListAsync();
         }
 
         public async Task AddDishBaskets(Guid dishId, Guid userId)
