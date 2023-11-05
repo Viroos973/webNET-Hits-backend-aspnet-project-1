@@ -29,7 +29,7 @@ namespace DeliveryFoodBackend.Service
                 throw new BadHttpRequestException(message: "Invalid delivery time. Delivery time must be more than current datetime on 60 minutes");
             }
 
-            var dishes = _context.Baskets.Where(x => x.UserId == userId).ToList();
+            var dishes = _context.Baskets.Where(x => x.UserId == userId && x.OrderId == null).ToList();
 
             if (dishes.Count() == 0)
             {
@@ -38,7 +38,6 @@ namespace DeliveryFoodBackend.Service
 
             var orderId = Guid.NewGuid();
             dishes.ForEach(x => x.OrderId = orderId);
-            await _context.SaveChangesAsync();
 
             double res = 0;
 
