@@ -17,7 +17,7 @@ namespace DeliveryFoodBackend.Service
 
         public async Task<List<DishBasketDto>> GetDishBaskets(Guid userId)
         {
-            return await _context.Baskets.Where(x => x.UserId == userId).Join(_context.Dishes, b => b.DishId, d => d.Id, (b, d) => new DishBasketDto
+            return await _context.Baskets.Where(x => x.UserId == userId && x.OrderId == null).Join(_context.Dishes, b => b.DishId, d => d.Id, (b, d) => new DishBasketDto
             {
                 Id = b.Id,
                 Name = d.Name,
@@ -37,7 +37,7 @@ namespace DeliveryFoodBackend.Service
                 throw new KeyNotFoundException(message: $"Dish with id={dishId} not found");
             }
 
-            var dishInBasket = _context.Baskets.Where(x => x.DishId == dishId && x.UserId == userId).FirstOrDefault();
+            var dishInBasket = _context.Baskets.Where(x => x.DishId == dishId && x.UserId == userId && x.OrderId == null).FirstOrDefault();
 
             if(dishInBasket != null)
             {
@@ -66,7 +66,7 @@ namespace DeliveryFoodBackend.Service
                 throw new KeyNotFoundException(message: $"Dish with id={dishId} not found");
             }
 
-            var dishInBasket = _context.Baskets.Where(x => x.DishId == dishId && x.UserId == userId).FirstOrDefault();
+            var dishInBasket = _context.Baskets.Where(x => x.DishId == dishId && x.UserId == userId && x.OrderId == null).FirstOrDefault();
 
             if (dishInBasket == null)
             {
