@@ -109,5 +109,51 @@ namespace DeliveryFoodBackend.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Authorize]
+        [Route("{id}/rating")]
+        public async Task<IActionResult> SetRating(Guid id, int score)
+        {
+            try
+            {
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Substring("Bearer ".Length);
+                await _tokenService.CheckToken(token);
+                await _dishService.SetRating(id, Guid.Parse(User.Identity.Name), score);
+                return Ok();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized(new Response
+                {
+                    Status = "Error",
+                    Message = "User is not authorized"
+                });
+            }
+            catch (BadHttpRequestException ex)
+            {
+                return BadRequest(new Response
+                {
+                    Status = "Error",
+                    Message = ex.Message
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new Response
+                {
+                    Status = "Error",
+                    Message = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new Response
+                {
+                    Status = "Error",
+                    Message = ex.Message
+                });
+            }
+        }
     }
 }

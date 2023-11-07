@@ -110,6 +110,45 @@ namespace DeliveryFoodBackend.Service
             return false;
         }
 
+        public async Task SetRating(Guid dishId, Guid userId, int score)
+        {
+            var dish = _context.Dishes.Where(x => x.Id == dishId).FirstOrDefault();
+
+            if (dish == null)
+            {
+                throw new KeyNotFoundException(message: $"Dish with id={dishId} not found");
+            }
+
+            if (score < 0 || score > 10)
+            {
+                throw new BadHttpRequestException(message: "Rating range is 0-10");
+            }
+
+            var userRating = _context.Ratings.Where(x => x.UserId == userId && x.DishId == dishId).FirstOrDefault();
+
+            if (userRating == null)
+            {
+                await _context.Ratings.AddAsync(new Rating
+                {
+                    UserId = userId,
+                    DishId = dishId,
+                    RatingScore = score
+                });
+            }
+            else
+            {
+                userRating.RatingScore = score;
+            }
+
+            await _context.SaveChangesAsync();
+
+            var dishRating = _context.Ratings.Where(x => x.DishId == dishId).ToList();
+            var rating = (double)dishRating.Sum(x => x.RatingScore) / dishRating.Count();
+            dish.Rating = rating;
+
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<List<DishDto>> GetDishes(DishCategory? category, bool vegetarian)
         {
             if (vegetarian)
