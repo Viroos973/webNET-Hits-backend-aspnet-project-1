@@ -1,5 +1,4 @@
-﻿using DeliveryFoodBackend.Data.Models.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DeliveryFoodBackend.DTO
 {
@@ -25,6 +24,6 @@ namespace DeliveryFoodBackend.DTO
         public double? Rating { get; set; }
 
         [Required]
-        public DishCategory Category { get; set; }
+        public string Category { get; set; }
     }
 }
