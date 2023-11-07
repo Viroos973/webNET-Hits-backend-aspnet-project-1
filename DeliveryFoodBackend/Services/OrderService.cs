@@ -3,6 +3,8 @@ using DeliveryFoodBackend.Data.Models;
 using DeliveryFoodBackend.Data.Models.Enums;
 using DeliveryFoodBackend.DTO;
 using DeliveryFoodBackend.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Security;
 
 namespace DeliveryFoodBackend.Service
 {
@@ -13,6 +15,42 @@ namespace DeliveryFoodBackend.Service
         public OrderService(AppDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<OrderDto> GetOrder(Guid orderId, Guid userId)
+        {
+            var order = _context.Orders.Where(x => x.Id == orderId).FirstOrDefault();
+
+            if (order == null)
+            {
+                throw new KeyNotFoundException(message: $"Order with id={orderId} don't in database");
+            }
+
+            if (userId != order.UserId)
+            {
+                throw new SecurityException(message: "Invalid order owner");
+            }
+
+            var dishInBaskets = await _context.Baskets.Where(x => x.OrderId == orderId).Join(_context.Dishes, b => b.DishId, d => d.Id, (b, d) => new DishBasketDto
+            {
+                Id = b.Id,
+                Name = d.Name,
+                Price = d.Price,
+                TotalPrice = d.Price * b.Amount,
+                Amount = b.Amount,
+                Image = d.Image
+            }).ToListAsync();
+
+            return new OrderDto
+            {
+                Id= orderId,
+                DeliveryTime = order.DeliveryTime,
+                OrderTime = order.OrderTime,
+                Status = order.Status,
+                Price = order.Price,
+                Dishes = dishInBaskets,
+                Address = order.Address
+            };
         }
 
         public async Task CreateOrder(OrderCreateDto orderCreate, Guid userId)

@@ -14,7 +14,7 @@ namespace DeliveryFoodBackend.DTO
         public DateTime OrderTime { get; set; }
 
         [Required]
-        public OrderStatus Status { get; set; }
+        public string Status { get; set; }
 
         [Required]
         public double Price { get; set; }
