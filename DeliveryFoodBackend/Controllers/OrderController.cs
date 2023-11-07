@@ -65,6 +65,35 @@ namespace DeliveryFoodBackend.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetListOrders()
+        {
+            try
+            {
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Substring("Bearer ".Length);
+                await _tokenService.CheckToken(token);
+                var listOrderDto = await _orderSevise.GetListOrders(Guid.Parse(User.Identity.Name));
+                return Ok(listOrderDto);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized(new Response
+                {
+                    Status = "Error",
+                    Message = "User is not authorized"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new Response
+                {
+                    Status = "Error",
+                    Message = ex.Message
+                });
+            }
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateOrder(OrderCreateDto orderCreate)

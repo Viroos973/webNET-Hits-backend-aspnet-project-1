@@ -53,6 +53,18 @@ namespace DeliveryFoodBackend.Service
             };
         }
 
+        public async Task<List<OrderInfoDto>> GetListOrders(Guid userId)
+        {
+            return await _context.Orders.Where(x => x.UserId == userId).Select(x => new OrderInfoDto
+            {
+                Id = x.Id,
+                DeliveryTime= x.DeliveryTime,
+                OrderTime = x.OrderTime,
+                Status = x.Status,
+                Price = x.Price
+            }).ToListAsync();
+        }
+
         public async Task CreateOrder(OrderCreateDto orderCreate, Guid userId)
         {
             var objectGuid = _context.AsHouses.Where(x => x.Objectguid == orderCreate.AddressId).FirstOrDefault();
