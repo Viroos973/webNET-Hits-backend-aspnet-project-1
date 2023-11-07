@@ -110,5 +110,28 @@ namespace DeliveryFoodBackend.Service
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task ConfirmOrder(Guid orderId, Guid userId)
+        {
+            var order = _context.Orders.Where(x => x.Id == orderId).FirstOrDefault();
+
+            if (order == null)
+            {
+                throw new KeyNotFoundException(message: $"Order with id={orderId} don't in database");
+            }
+
+            if (userId != order.UserId)
+            {
+                throw new SecurityException(message: "Invalid order owner");
+            }
+
+            if (order.Status == OrderStatus.Delivered.ToString())
+            {
+                throw new BadHttpRequestException(message: $"Can't update status for order with id={orderId}");
+            }
+
+            order.Status = OrderStatus.Delivered.ToString();
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -138,5 +138,59 @@ namespace DeliveryFoodBackend.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Authorize]
+        [Route("{orderId}/status")]
+        public async Task<IActionResult> ConfirmOrder(Guid orderId)
+        {
+            try
+            {
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Substring("Bearer ".Length);
+                await _tokenService.CheckToken(token);
+                await _orderSevise.ConfirmOrder(orderId, Guid.Parse(User.Identity.Name));
+                return Ok();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new Response
+                {
+                    Status = "Error",
+                    Message = ex.Message
+                });
+            }
+            catch (SecurityException ex)
+            {
+                return StatusCode(403, new Response
+                {
+                    Status = "Error",
+                    Message = ex.Message
+                });
+            }
+            catch (BadHttpRequestException ex)
+            {
+                return BadRequest(new Response
+                {
+                    Status = "Error",
+                    Message = ex.Message
+                });
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized(new Response
+                {
+                    Status = "Error",
+                    Message = "User is not authorized"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new Response
+                {
+                    Status = "Error",
+                    Message = ex.Message
+                });
+            }
+        }
     }
 }
