@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Security.Cryptography.X509Certificates;
 
 namespace DeliveryFoodBackend.Data.Models
 {
@@ -10,10 +9,10 @@ namespace DeliveryFoodBackend.Data.Models
         public Guid Id { get; set; }
 
         [Required]
-        public DataType DeliveryTime { get; set; }
+        public DateTime DeliveryTime { get; set; }
 
         [Required]
-        public DataType OrderTime { get; set; }
+        public DateTime OrderTime { get; set; }
 
         [Required]
         public string Status { get; set; }
@@ -23,7 +22,7 @@ namespace DeliveryFoodBackend.Data.Models
 
         [Required]
         [MinLength(1)]
-        public string Address { get; set; }
+        public Guid Address { get; set; }
 
         [Required]
         public Guid UserId { get; set; }

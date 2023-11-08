@@ -11,7 +11,7 @@ namespace DeliveryFoodBackend.Data.Models
         [Required]
         public string FullName { get; set; }
 
-        public DataType? BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
 
         [Required]
         public string Genders { get; set; }
@@ -24,7 +24,7 @@ namespace DeliveryFoodBackend.Data.Models
         [EmailAddress]
         public string EmailAddress { get; set;}
 
-        public string? Address { get; set; }
+        public Guid? Address { get; set; }
 
         [Required]
         [MinLength(1)]

@@ -15,7 +15,6 @@ namespace DeliveryFoodBackend.DTO
         [Required]
         public double Price { get; set; }
 
-        [Url]
         public string? Image {  get; set; }
 
         [Required]

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DeliveryFoodBackend.Data.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace DeliveryFoodBackend.DTO
 {
@@ -23,6 +24,6 @@ namespace DeliveryFoodBackend.DTO
 
         [Required]
         [MinLength(1)]
-        public string Address { get; set; }
+        public Guid Address { get; set; }
     }
 }

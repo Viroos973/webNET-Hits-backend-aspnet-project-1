@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DeliveryFoodBackend.Data.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace DeliveryFoodBackend.DTO
 {
     public class SearchAddressModel
     {
         [Required]
-        public int ObjectId { get; set; }
+        public long ObjectId { get; set; }
 
         [Required]
         public Guid ObgectGuid { get; set; }
@@ -13,7 +14,7 @@ namespace DeliveryFoodBackend.DTO
         public string? Text { get; set; }
 
         [Required]
-        public string ObjectLevel { get; set; }
+        public GarAddressLevel ObjectLevel { get; set; }
 
         public string? ObjectLevelText { get; set; }
     }
