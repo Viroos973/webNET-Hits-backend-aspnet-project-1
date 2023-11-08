@@ -6,7 +6,7 @@ namespace DeliveryFoodBackend.DTO
     public class SearchAddressModel
     {
         [Required]
-        public int ObjectId { get; set; }
+        public long ObjectId { get; set; }
 
         [Required]
         public Guid ObgectGuid { get; set; }
