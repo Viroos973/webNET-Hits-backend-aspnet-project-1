@@ -5,6 +5,7 @@ using DeliveryFoodBackend.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http.HttpResults;
 using DeliveryFoodBackend.Data.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DeliveryFoodBackend.Service
 {
@@ -139,7 +140,7 @@ namespace DeliveryFoodBackend.Service
 
             var dishRating = _context.Ratings.Where(x => x.DishId == dishId).ToList();
             var rating = (double)dishRating.Sum(x => x.RatingScore) / dishRating.Count();
-            dish.Rating = rating;
+            dish.Rating = Math.Round(rating, 2);
 
             await _context.SaveChangesAsync();
         }
