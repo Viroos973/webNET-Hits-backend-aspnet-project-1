@@ -16,7 +16,6 @@ namespace DeliveryFoodBackend.Data.Models
         [Required]
         public double Price { get; set; }
 
-        [Url]
         public string? Image { get; set; }
 
         [Required]

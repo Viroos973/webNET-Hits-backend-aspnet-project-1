@@ -119,11 +119,6 @@ namespace DeliveryFoodBackend.Service
                 throw new KeyNotFoundException(message: $"Dish with id={dishId} not found");
             }
 
-            if (score < 0 || score > 10)
-            {
-                throw new BadHttpRequestException(message: "Rating range is 0-10");
-            }
-
             var userRating = _context.Ratings.Where(x => x.UserId == userId && x.DishId == dishId).FirstOrDefault();
 
             if (userRating == null)

@@ -146,6 +146,11 @@ namespace DeliveryFoodBackend.Controllers
         [Route("profile")]
         public async Task<IActionResult> EditProfile(UserEditModel editModel)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 await _tokenService.CheckToken(HttpContext.Request.Headers["Authorization"].ToString().Substring("Bearer ".Length));

@@ -25,21 +25,26 @@ namespace DeliveryFoodBackend.Service
         {
             if (userRegisterModel.BirthDate != null && userRegisterModel.BirthDate > DateTime.UtcNow)
             {
-                throw new BadHttpRequestException(message: $"Birth date can't be later than today.");
+                throw new BadHttpRequestException(message: "Birth date can't be later than today");
             }
 
             var email = _context.Users.Where(x => x.EmailAddress == userRegisterModel.Email).FirstOrDefault();
 
             if (email != null)
             {
-                throw new BadHttpRequestException(message: $"Username {userRegisterModel.Email} is already taken.");
+                throw new BadHttpRequestException(message: $"Username {userRegisterModel.Email} is already taken");
             }
 
             var address = _context.AsHouses.Where(x => x.Objectguid == userRegisterModel.AddressId).FirstOrDefault();
 
             if (address == null)
             {
-                throw new BadHttpRequestException(message: $"Address not found.");
+                throw new BadHttpRequestException(message: "Address not found");
+            }
+
+            if (!userRegisterModel.Password.Any(char.IsDigit))
+            {
+                throw new BadHttpRequestException(message: "Password requires at least one digit");
             }
 
             var passwordHash = await PasswordHashing(userRegisterModel.Password);
@@ -95,8 +100,6 @@ namespace DeliveryFoodBackend.Service
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, userEntity.Id.ToString()),
-                    new Claim("name", userEntity.FullName),
-                    new Claim("email", userEntity.EmailAddress.ToString())
                 })
             };
 
@@ -140,14 +143,14 @@ namespace DeliveryFoodBackend.Service
         {
             if (editModel.BirthDate != null && editModel.BirthDate > DateTime.UtcNow)
             {
-                throw new BadHttpRequestException(message: $"Birth date can't be later than today.");
+                throw new BadHttpRequestException(message: "Birth date can't be later than today");
             }
 
             var address = _context.AsHouses.Where(x => x.Objectguid == editModel.AddressId).FirstOrDefault();
 
             if (address == null)
             {
-                throw new BadHttpRequestException(message: $"Address not found.");
+                throw new BadHttpRequestException(message: "Address not found");
             }
 
             var user = await _context.Users.Where(x => x.Id == id).FirstOrDefaultAsync();

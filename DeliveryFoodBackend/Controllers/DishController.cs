@@ -3,6 +3,7 @@ using DeliveryFoodBackend.DTO;
 using DeliveryFoodBackend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace DeliveryFoodBackend.Controllers
 {
@@ -113,7 +114,7 @@ namespace DeliveryFoodBackend.Controllers
         [HttpPost]
         [Authorize]
         [Route("{id}/rating")]
-        public async Task<IActionResult> SetRating(Guid id, int score)
+        public async Task<IActionResult> SetRating(Guid id,[Range(0, 10)] int score)
         {
             try
             {
@@ -128,14 +129,6 @@ namespace DeliveryFoodBackend.Controllers
                 {
                     Status = "Error",
                     Message = "User is not authorized"
-                });
-            }
-            catch (BadHttpRequestException ex)
-            {
-                return BadRequest(new Response
-                {
-                    Status = "Error",
-                    Message = ex.Message
                 });
             }
             catch (KeyNotFoundException ex)

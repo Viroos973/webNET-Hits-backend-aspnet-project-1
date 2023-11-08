@@ -26,6 +26,8 @@ namespace DeliveryFoodBackend.DTO
         public Gender Gender { get; set; }
 
         [Phone]
+        [RegularExpression(@"^\+7\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$", 
+            ErrorMessage = "The phone number must match the following mask <+7 (xxx) xxx-xx-xx>")]
         public string? PhoneNumber { get; set; }
     }
 }

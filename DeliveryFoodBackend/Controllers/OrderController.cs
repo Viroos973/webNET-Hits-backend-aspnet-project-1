@@ -98,6 +98,11 @@ namespace DeliveryFoodBackend.Controllers
         [Authorize]
         public async Task<IActionResult> CreateOrder(OrderCreateDto orderCreate)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 var token = HttpContext.Request.Headers["Authorization"].ToString().Substring("Bearer ".Length);
